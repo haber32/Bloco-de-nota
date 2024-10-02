@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenda de Eventos com Firebase e Autenticação</title>
+    <title>Bloco NOTES</title>
     <style>
         body {
-            background-color: #121212;
+            background-color: #b2b2b2;
             color: #E0E0E0;
             font-family: Arial, sans-serif;
             margin: 0;
@@ -23,16 +23,16 @@
         }
 
         .form-container {
-            background-color: #1F1F1F;
+            background-color:#0b08aa;
             border-radius: 8px;
-            padding: 20px;
+            padding: 60px;
             margin-bottom: 20px;
             width: 100%;
             max-width: 500px;
         }
 
         h1 {
-            color: #E0E0E0;
+            color: #ffffff;
             font-size: 24px;
             margin-bottom: 20px;
         }
@@ -52,22 +52,22 @@
         input[type="password"],
         input[type="date"],
         input[type="time"] {
-            background-color: #333;
-            color: #E0E0E0;
+            background-color: #e7ebff;
+            color: #f8631e;
         }
 
         button {
-            background-color: #6200EE;
+            background-color: #f8631e;
             color: #E0E0E0;
             cursor: pointer;
         }
 
         button:hover {
-            background-color: #3700B3;
+            background-color: #fc9ddf;
         }
 
         .event-container {
-            background-color: #1F1F1F;
+            background-color:  #0b08aa;
             border-radius: 8px;
             padding: 20px;
             width: 100%;
@@ -75,7 +75,7 @@
         }
 
         .event-item {
-            background-color: #2C2C2C;
+            background-color: #f78d47;
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 10px;
@@ -83,12 +83,12 @@
 
         .event-item h3 {
             margin: 0 0 10px;
-            color: #E0E0E0;
+            color: #5bc8e9;
         }
 
         .event-item p {
             margin: 5px 0;
-            color: #B0B0B0;
+            color: #000000;
         }
 
         .modal {
@@ -97,16 +97,16 @@
             z-index: 1;
             left: 0;
             top: 0;
-            width: 100%;
-            height: 100%;
+            width: 80%;
+            height: 80%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color:  #f8631e;
             justify-content: center;
             align-items: center;
         }
 
         .modal-content {
-            background-color: #1F1F1F;
+            background-color:#0b08aa;
             border-radius: 8px;
             padding: 20px;
             margin: 15% auto;
@@ -115,12 +115,12 @@
         }
 
         .modal-content input {
-            background-color: #333;
-            color: #E0E0E0;
+            background-color: #c6edfc;
+            color:  #1f1f20;
         }
 
         .close {
-            color: #E0E0E0;
+            color: #ffffff;
             float: right;
             font-size: 28px;
             font-weight: bold;
@@ -128,7 +128,7 @@
 
         .close:hover,
         .close:focus {
-            color: #B0B0B0;
+            color: #fffafa;
             text-decoration: none;
             cursor: pointer;
         }
@@ -152,18 +152,24 @@
     <div class="container">
         <!-- Container de autenticação -->
         <div id="authContainer" class="form-container">
-            <h1>Login</h1>
+            <h1>BEM VINDO(A)!</h1>
+            <img src="TATTOO.png" alt="">
             <form id="formLogin">
                 <input type="email" id="inputEmail" placeholder="E-mail" required>
                 <input type="password" id="inputSenha" placeholder="Senha" required>
                 <button type="submit">Login</button>
             </form>
-            <button id="botaoCadastro">Cadastrar Novo Usuário</button>
+            <button id="botaoCadastro">Cadastrar </button>
         </div>
+        <nav class="navbar">
+            <ul>
+                
+                <li><a href="#" id="homeIcon"><i class="fas fa-home"></i> Início</a></li>
+
 
         <!-- Container de CRUD de eventos -->
         <div id="crudContainer">
-            <h1>Adicionar Novo Evento</h1>
+            <h1>Criar NOTES</h1>
             <form id="formEvento" class="form-container">
                 <input type="text" id="inputNome" placeholder="Nome do Evento" required>
                 <input type="text" id="inputDescricao" placeholder="Descrição do Evento" required>
@@ -171,10 +177,9 @@
                 <input type="time" id="inputHorario" required>
                 <input type="text" id="inputLocal" placeholder="Local do Evento" required>
                 <input type="text" id="inputParticipantes" placeholder="Participantes (separados por vírgula)">
-                <button type="submit">Adicionar Evento</button>
-            </form>
-
-            <h1>Eventos</h1>
+                <button type="submit">Adicionar Tarefa</button>
+ 
+            <h1>Pastas</h1>
             <div id="containerEventos" class="event-container"></div>
             <button id="botaoLogout">Logout</button>
         </div>
@@ -198,6 +203,12 @@
         </div>
     </div>
 
+
+               
+
+
+
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
@@ -205,12 +216,12 @@
 
         // Configurações do Firebase
         const configuracaoFirebase = {
-            apiKey: "AIzaSyCZdo7nEsry2671R6sovInXVk6FqxMak6k",
-            authDomain: "lista-53e33.firebaseapp.com",
-            projectId: "lista-53e33",
-            storageBucket: "lista-53e33.appspot.com",
-            messagingSenderId: "645648658492",
-            appId: "1:645648658492:web:7b7414d911ad8296751339"
+          apiKey: "AIzaSyCZdo7nEsry2671R6sovInXVk6FqxMak6k",
+          authDomain: "lista-53e33.firebaseapp.com",
+          projectId: "lista-53e33",
+          storageBucket: "lista-53e33.appspot.com",
+          messagingSenderId: "645648658492",
+          appId: "1:645648658492:web:7b7414d911ad8296751339"
         };
 
         // Inicializar Firebase
@@ -355,7 +366,7 @@
 
         // Função para excluir evento
         window.excluirEvento = async function (id) {
-            const confirmar = confirm('Tem certeza de que deseja excluir este evento?');
+            const confirmar = confirm('Tem certeza de que deseja excluir essa tarefa?');
             if (confirmar) {
                 try {
                     const eventoRef = doc(db, 'eventos', id);
